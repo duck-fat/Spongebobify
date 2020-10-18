@@ -1,9 +1,10 @@
 from discord.ext import commands
 import random
+import os
 
 INIT_CAP_CHANCE = 0.50  # initial probability to capitalize a letter
 
-BOT_ENABLED = False
+BOT_ENABLED = True
 
 
 bot = commands.Bot(command_prefix="!spong")
@@ -26,3 +27,6 @@ async def _convert(ctx, *phrase):
     if BOT_ENABLED:
         await ctx.send(alt_cased)
     return alt_cased
+
+token = os.environ.get("SPONGE_SECRET")
+bot.run(token)
