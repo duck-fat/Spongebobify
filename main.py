@@ -10,15 +10,38 @@ BOT_ENABLED = False
 bot = commands.Bot(command_prefix="!spong")
 
 
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+
+    # This is checked so that we can skip
+    # middle five numbers in below loop
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i = i + 6
+
+    return True
+
+
 @bot.command(name="ify")
 async def _convert(ctx, *phrase):
-    unaltered = ''.join(phrase) if len(phrase) == 1 else ' '.join(phrase)
+    unaltered = phrase if len(phrase) == 1 else ' '.join(phrase)
     lowered = unaltered.lower()
     alt_cased = []
     cap_chance = INIT_CAP_CHANCE
     for c in lowered:
         roll = random.random()
-        if roll > cap_chance:
+        if c == ' ':
+            alt_cased.append(' ')
+            continue
+        if roll >= cap_chance:
             alt_cased.append(c.upper())
             cap_chance = INIT_CAP_CHANCE
         else:
