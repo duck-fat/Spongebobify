@@ -43,5 +43,4 @@ else:
     print("No network :( ")
 
 token = os.environ.get("SPONGE_SECRET")
-print(token)
 bot.run(token)
