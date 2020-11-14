@@ -1,0 +1,39 @@
+# used the following resources:
+# https://docs.github.com/en/free-pro-team@latest/actions/quickstart
+# https://github.com/docker/login-action#github-container-registry
+# https://github.com/marketplace/actions/build-and-push-docker-images#push-to-multi-registries
+name: ci
+
+on:
+  push:
+    branches: main
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/setup-buildx-action@v1
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_PAT }}
+      -
+        name: Build and Push
+        id: docker_build
+        env:
+          PUB_TAG: '${{ github.head_ref }}-${{ github.event.push.head.sha }}'
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/duck-fat/spongebobify:latest
+      -
+        name: Image Digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
