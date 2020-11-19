@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spongebobify
+spec:
+  containers:
+  - name: spongebobify
+    image: ghcr.io/duck-fat/spongebobify:latest
+    imagePullPolicy: Always
+    env:
+    - name: SPONGE_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: sponge-secret
+          key: bot-token
+  imagePullSecrets:
+  - name: ghcr-auth
